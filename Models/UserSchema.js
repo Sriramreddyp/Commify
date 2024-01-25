@@ -25,7 +25,7 @@ const userSchema = new Schema({
         throw new Error("password should not be more than 64 characters.");
     },
   },
-  created_at: { type: datetime, required: true },
+  created_at: { type: Date, required: true },
 });
 
 //**Creating Model for operation usage */

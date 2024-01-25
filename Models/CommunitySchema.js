@@ -25,8 +25,8 @@ const communitySchema = new Schema({
     },
   },
   owner: { type: String, required: true, unique: true },
-  created_at: { type: datetime, required: true },
-  updated_at: { type: datetime, required: true }, //? Should be updated each and every time when there is an update in this schema model
+  created_at: { type: Date, required: true },
+  updated_at: { type: Date, required: true }, //? Should be updated each and every time when there is an update in this schema model
 });
 
 //**Creating Model for operation usage */

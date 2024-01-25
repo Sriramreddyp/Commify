@@ -1,5 +1,5 @@
 const express = require("express");
-const MemRouter = express.Router();
+const AuthRouter = express.Router();
 const { body, validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const auth = require("../Utils/Authentication.js");
@@ -8,4 +8,4 @@ const memModel = require("../Models/MemberSchema.js");
 const rolModel = require("../Models/RolesSchema.js");
 const userModel = require("../Models/UserSchema.js");
 
-module.exports = MemRouter;
+module.exports = AuthRouter;
