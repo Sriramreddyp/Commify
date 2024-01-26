@@ -9,14 +9,15 @@ const rolesSchema = new Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
     default: null,
     validate: (value) => {
       if (value.length > 128)
         throw new Error("Name should not be more than 128 characters.");
     },
   },
-  created_at: { type: Date, required: true },
-  updated_at: { type: Date, required: true }, //? Should be updated each and every time when there is an update in this schema model
+  created_at: { type: Date, required: true, default: Date.now },
+  updated_at: { type: Date, required: true, default: Date.now }, //? Should be updated each and every time when there is an update in this schema model
 });
 
 //**Creating Model for operation usage */

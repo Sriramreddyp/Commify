@@ -9,7 +9,7 @@ const memberSchema = new Schema({
   community: { type: String, required: true, unique: true },
   user: { type: String, required: true, unique: true },
   role: { type: String, required: true, unique: true },
-  created_at: { type: Date, required: true },
+  created_at: { type: Date, required: true, default: Date.now },
 });
 
 //**Creating Model for operation usage */
