@@ -6,13 +6,15 @@ const AuthRouter = require("./Routes/Auth.js");
 const ComRouter = require("./Routes/Community.js");
 const MemRouter = require("./Routes/Member.js");
 const RolesRouter = require("./Routes/Roles.js");
+const cookieparser = require("cookie-parser");
 
 //**Database connectivity */
 require("./DB/db.js");
 
-//**Setting up parameters for the express app */
+//**Setting up middlewares for the express app */
 app.use(express.json());
 app.use(BodyParser.urlencoded({ extended: true }));
+app.use(cookieparser());
 dotenv.config();
 
 //**Setting up Routers for different modules */

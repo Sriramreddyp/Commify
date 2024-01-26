@@ -12,7 +12,12 @@ const uunid = require("@theinternetfolks/snowflake");
 //**Route for adding appropriate roles */
 RolesRouter.post(
   "/",
-  [body("name", "Please enter valid role name").exists().isString()],
+  [
+    body("name", "Please enter valid role name")
+      .exists()
+      .isString()
+      .isLength({ min: 2 }),
+  ],
   async (req, res) => {
     try {
       //? Input Validation
@@ -33,9 +38,9 @@ RolesRouter.post(
 
       //? Creating a constructor
       let Role = new rolModel(obj);
-
+      let response = null;
       //? Inserting into database
-      let response = await Role.save();
+      response = await Role.save();
 
       //?For debugging purpose
       // console.log(response);
