@@ -50,18 +50,14 @@ AuthRouter.post(
       //? Creating Constructor
       let user = new UserModel(obj);
 
-      let response = null;
       //?Retriving ack response
-      response = await user.save();
+      let response = await user.save();
 
       //? console.log(response); For debugging purpose
 
-      //?Miscellenious case handle
-      if (response == null) throw "Error in inserting the data into database.";
-
       //?Token and cookie generation
       jwt.sign(
-        { name: req.body.name, email: req.body.email },
+        { name: req.body.name, email: req.body.email, id: uuid },
         process.env.JWT_TOKEN_USER,
         { expiresIn: "60m" },
         (err, token) => {
@@ -92,7 +88,7 @@ AuthRouter.post(
               httpOnly: true,
               sameSite: "None",
               secure: false,
-              maxAge: 1 * 60 * 60 * 1000,
+              maxAge: 24 * 60 * 60 * 1000,
             })
             .json(ans);
         }
@@ -135,7 +131,7 @@ AuthRouter.post(
 
       // //?Token and cookie generation
       jwt.sign(
-        { name: user.name, email: req.body.email },
+        { name: user.name, email: req.body.email, id: user.id },
         process.env.JWT_TOKEN_USER,
         { expiresIn: "60m" },
         (err, token) => {
@@ -166,7 +162,7 @@ AuthRouter.post(
               httpOnly: true,
               sameSite: "None",
               secure: false,
-              maxAge: 1 * 60 * 60 * 1000,
+              maxAge: 24 * 60 * 60 * 1000,
             })
             .json(ans);
         }
@@ -177,6 +173,7 @@ AuthRouter.post(
   }
 );
 
+//** Route for retriving details for logged in user */
 AuthRouter.get("/me", auth.authorizationUser, async (req, res) => {
   try {
     //? Retriving requried details from cookie
@@ -207,6 +204,7 @@ AuthRouter.get("/me", auth.authorizationUser, async (req, res) => {
   }
 });
 
+//** Route for logging out */
 AuthRouter.get("/logout", auth.authorizationUser, async (req, res) => {
   res
     .clearCookie("access_token_user")

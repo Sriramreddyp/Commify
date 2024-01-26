@@ -9,6 +9,7 @@ function authorizationUser(req, res, next) {
     try {
       const data = jwt.verify(token, process.env.JWT_TOKEN_USER);
       req.email = data.email;
+      req.id = data.id;
       return next();
     } catch {
       res.status(500).json("Internal Server Error.. (Token expired)");

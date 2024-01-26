@@ -38,34 +38,28 @@ RolesRouter.post(
 
       //? Creating a constructor
       let Role = new rolModel(obj);
-      let response = null;
+
       //? Inserting into database
-      response = await Role.save();
+      let response = await Role.save();
 
       //?For debugging purpose
       // console.log(response);
 
-      if (response != null) {
-        //?Creating ans formate obj
-        let ans = {
-          status: true,
-          content: {
-            data: {
-              id: response.id,
-              name: response.name,
-              created_at: response.created_at,
-              updated_at: response.updated_at,
-            },
+      //?Creating ans formate obj
+      let ans = {
+        status: true,
+        content: {
+          data: {
+            id: response.id,
+            name: response.name,
+            created_at: response.created_at,
+            updated_at: response.updated_at,
           },
-        };
+        },
+      };
 
-        //?Sending response
-        res.json(ans);
-      } else
-        res.json({
-          status: false,
-          reason: "Response is not received..error in insertion",
-        });
+      //?Sending response
+      res.json(ans);
     } catch (err) {
       res.status(500).json({ status: false, reason: err });
     }
