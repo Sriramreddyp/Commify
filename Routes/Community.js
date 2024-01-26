@@ -184,4 +184,211 @@ CommRouter.get("/", auth.authorizationUser, async (req, res) => {
   }
 });
 
+//** Route to retrive all the members from a particular community */
+CommRouter.get("/:id/members", auth.authorizationUser, async (req, res) => {
+  try {
+    //? checking authorization of user
+    let memCheck = await memModel.findOne({ user: req.id });
+
+    if (!memCheck) {
+      res.status(401).json({
+        status: "No Authorization for this user to access community details",
+      });
+      return;
+    }
+
+    //?Getting details from params
+    let communityName = req.params.id;
+
+    //?Retriving id of the community
+    let communityId = await communityModel.findOne(
+      { name: communityName },
+      { id: 1, _id: 0 }
+    );
+    if (!communityId)
+      throw "Error in retriving members of the requried community";
+
+    //? console.log(communityId); for debugging purpose
+
+    //?Retriving members of the community
+    let members = await memModel.find({ community: communityId.id });
+    if (!members) throw "Error in retriving members of the requried community";
+
+    //? console.log(members); for debugging purpose
+
+    // //?For retriving names of the users
+    let names = [];
+    for (let i = 0; i < members.length; i++) {
+      let name = await userModel.findOne(
+        { id: members[i].user },
+        { name: 1, _id: 0 }
+      );
+      names.push({ id: members[i].user, name: name.name });
+    }
+
+    //? console.log(names); for debugging purpose
+
+    // //?For retriving names of the roles
+    let roles = [];
+    for (let i = 0; i < members.length; i++) {
+      let name = await rolModel.findOne(
+        { id: members[i].role },
+        { name: 1, _id: 0 }
+      );
+      roles.push({ id: members[i].role, name: name.name });
+    }
+
+    //? console.log(roles); for debugging purpose
+
+    // //? for consolidating final data
+    let data = [];
+    for (let i = 0; i < members.length; i++) {
+      let obj = {
+        id: members[i].id,
+        community: members[i].community,
+        user: {
+          id: names[i].id,
+          name: names[i].name,
+        },
+        role: {
+          id: roles[i].id,
+          name: roles[i].name,
+        },
+        created_at: members[i].created_at,
+      };
+      data.push(obj);
+    }
+
+    //? console.log(data); for debugging purpose
+
+    // //?Pagination details
+    let noOfDoc = members.length;
+    let pages = Math.ceil(noOfDoc / 10);
+    if (pages != 1) pages += noOfDoc % 10;
+
+    // //?Final response data
+    res.json({
+      status: true,
+      content: {
+        meta: {
+          total: noOfDoc,
+          pages: pages,
+          page: 1,
+        },
+        data: data,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ status: false, reason: err });
+  }
+});
+
+//** Route for retriving communities belonged to the logged in user */
+CommRouter.get("/me/owner", auth.authorizationUser, async (req, res) => {
+  try {
+    //? Retriving communities belonged to this user
+    let communities = await comModel.find(
+      { owner: req.id },
+      { _id: 0, __v: 0 }
+    );
+
+    //? console.log(communities); for debugging purpose
+
+    // //?Pagination details
+    let noOfDoc = communities.length;
+    let pages = Math.ceil(noOfDoc / 10);
+    if (pages != 1) pages += noOfDoc % 10;
+
+    // //?Final response data
+    res.json({
+      status: true,
+      content: {
+        meta: {
+          total: noOfDoc,
+          pages: pages,
+          page: 1,
+        },
+        data: communities,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ status: false, reason: err });
+  }
+});
+
+//** Route to Retrive all the joined communities of a particular user */
+//? retrive all the members with the logged in user
+//? retrive all the community id's from the members
+//? retrive all the communities
+//?retrive all the owner names from users
+//?consolidate the obj
+CommRouter.get("/me/member", auth.authorizationUser, async (req, res) => {
+  try {
+    //?Retrive all the members as logged in user
+    let members = await memModel.find({ user: req.id }, { _id: 0, __v: 0 });
+
+    //? Retriving communities from the members list
+    let communities = [];
+    for (let i = 0; i < members.length; i++) {
+      let community = await comModel.findOne(
+        { id: members[i].community },
+        { _id: 0, __v: 0 }
+      );
+      communities.push(community);
+    }
+
+    //? console.log(communities); for debugging purpose
+
+    // //?For retriving names of the users
+    let names = [];
+    for (let i = 0; i < communities.length; i++) {
+      let name = await userModel.findOne(
+        { id: communities[i].owner },
+        { name: 1, _id: 0 }
+      );
+      names.push({ id: communities[i].owner, name: name.name });
+    }
+
+    // ? console.log(names); for debugging purpose
+
+    // //?Pagination details
+    let noOfDoc = communities.length;
+    let pages = Math.ceil(noOfDoc / 10);
+    if (pages != 1) pages += noOfDoc % 10;
+
+    //? for consolidating final data
+    let data = [];
+    for (let i = 0; i < communities.length; i++) {
+      let obj = {
+        id: communities[i].id,
+        name: communities[i].name,
+        slug: communities[i].slug,
+        owner: {
+          id: names[i].id,
+          name: names[i].name,
+        },
+        created_at: communities[i].created_at,
+        updated_at: communities[i].updated_at,
+      };
+      data.push(obj);
+    }
+
+    // ? console.log(data) for debugging purpose;
+
+    //?Final response data
+    res.json({
+      status: true,
+      content: {
+        meta: {
+          total: noOfDoc,
+          pages: pages,
+          page: 1,
+        },
+        data: data,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ status: false, reason: err });
+  }
+});
 module.exports = CommRouter;
