@@ -24,7 +24,7 @@ app.use("/v1/community", ComRouter);
 app.use("/v1/member", MemRouter);
 
 //**Initial Route */
-app.get("/v1", (req, res) => {
+app.get("/", (req, res) => {
   res.json({
     status: "Welcome to Commify, Explore...Communicate...Collaborate",
   });
