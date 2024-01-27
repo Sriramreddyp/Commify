@@ -391,4 +391,5 @@ CommRouter.get("/me/member", auth.authorizationUser, async (req, res) => {
     res.status(500).json({ status: false, reason: err });
   }
 });
+
 module.exports = CommRouter;

@@ -6,9 +6,9 @@ const Schema = mongoose.Schema;
 //**Defining member Schema Design */
 const memberSchema = new Schema({
   id: { type: String, required: true, unique: true },
-  community: { type: String, required: true },
-  user: { type: String, required: true },
-  role: { type: String, required: true },
+  community: { type: String, required: true, unique: false },
+  user: { type: String, required: true, unique: false },
+  role: { type: String, required: true, unique: false },
   created_at: { type: Date, required: true, default: Date.now },
 });
 
