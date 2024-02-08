@@ -38,3 +38,13 @@ Initially, the whole platform is implemented module wise where each module is de
 ### Communities :
 
 - Marketplace for joining and create communities.
+
+### Deployment and Testing :
+For Testing the working mechanism :
+
+In a machine with docker capability, Run the following command :
+ - docker run -it -p 3000:3000 sriram2211/commify:v1.0
+
+After sucessful start-up of the application, you can access the application on http://localhost:3000/v1
+
+
