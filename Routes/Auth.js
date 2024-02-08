@@ -11,6 +11,11 @@ const uunid = require("@theinternetfolks/snowflake");
 const bcrypt = require("bcryptjs");
 const UserModel = require("../Models/UserSchema.js");
 
+//**Test Route */
+AuthRouter.get("/", (req, res) => {
+  res.json({ status: "Test Sucessfull" });
+});
+
 //** Signup endpoint for user */
 AuthRouter.post(
   "/signup",
